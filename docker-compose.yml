@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - MONGO_URI=mongodb://root:2Gl4MFym8Q@mongo:27017/indicationsdb?authSource=admin
+      - JWT_SECRET=drug-indicator-secret
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+    command: npm run start:dev
+
+  mongo:
+    image: bitnami/mongodb:latest
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
+      - MONGODB_ROOT_PASSWORD=2Gl4MFym8Q
+      - MONGODB_USERNAME=drugindications
+      - MONGODB_PASSWORD=1ieGJSYEOX
+      - MONGODB_DATABASE=indicationsdb
