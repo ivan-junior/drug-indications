@@ -18,7 +18,7 @@ export class Indication {
   icd10Description?: string;
 
   @Prop({ default: false })
-  unmapped: boolean; // true se não foi possível mapear via GPT
+  unmapped: boolean; // true if mapping via GPT was not possible
 }
 
 export const IndicationSchema = SchemaFactory.createForClass(Indication);

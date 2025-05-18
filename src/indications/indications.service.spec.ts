@@ -78,7 +78,7 @@ describe('IndicationsService', () => {
   });
 
   beforeEach(async () => {
-    // Limpa todas as indicações antes de cada teste
+    // Clear all indications before each test
     await indicationModel.deleteMany({});
   });
 
@@ -101,7 +101,7 @@ describe('IndicationsService', () => {
   });
 
   it('should return indications for a drug', async () => {
-    // Cria uma indicação primeiro
+    // Create an indication first
     const indication = await indicationsService.generateFromScraper(
       drugId.toString(),
     );
@@ -146,7 +146,7 @@ describe('IndicationsService', () => {
   });
 
   it('should delete an indication', async () => {
-    // Cria a primeira indicação
+    // Create the first indication
     const indication1 = (await indicationsService.create({
       drug: drugId.toString(),
       condition: 'asthma',
@@ -155,7 +155,7 @@ describe('IndicationsService', () => {
       unmapped: false,
     })) as IndicationDocument;
 
-    // Cria a segunda indicação
+    // Create the second indication
     await indicationsService.create({
       drug: drugId.toString(),
       condition: 'rhinitis',
@@ -169,7 +169,7 @@ describe('IndicationsService', () => {
     );
     const after = await indicationsService.findByDrug(drugId.toString());
 
-    expect(after.length).toBe(1); // Deve ter apenas a indicação de rinite
+    expect(after.length).toBe(1); // Should have only the rhinitis indication
     expect(after[0].condition).toBe('rhinitis');
   });
 });

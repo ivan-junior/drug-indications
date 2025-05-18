@@ -58,7 +58,7 @@ describe('AuthController (e2e)', () => {
       .expect(201);
 
     expect(res.body.email).toBe(user.email);
-    expect(res.body.password).toBeUndefined(); // segurança
+    expect(res.body.password).toBeUndefined(); // security
   });
 
   it('should login with correct credentials', async () => {

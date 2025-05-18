@@ -14,7 +14,7 @@ export class ScraperService {
     const { data: html } = await axios.get(this.url);
     const $ = cheerio.load(html);
 
-    // A seção "What is DUPIXENT?" fica dentro de um div com class .drug-info
+    // The "What is DUPIXENT?" section is inside a div with class .drug-info
     const rawText = $('.drug-info').text();
     const lower = rawText.toLowerCase();
 
@@ -23,10 +23,10 @@ export class ScraperService {
       throw new Error('Section "What is DUPIXENT?" not found.');
     }
 
-    // Pegamos um bloco de texto a partir da seção desejada
-    const snippet = rawText.slice(startIdx, startIdx + 2000); // 2000 chars após o início
+    // Get a text block from the desired section
+    const snippet = rawText.slice(startIdx, startIdx + 2000); // 2000 chars after the start
 
-    // Divide em frases e filtra as mais relevantes
+    // Split into sentences and filter the most relevant ones
     const sentences = snippet
       .split(/[.\n]+/)
       .map((line) => line.trim())
