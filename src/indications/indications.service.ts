@@ -13,6 +13,9 @@ import { DrugsService } from 'src/drugs/drugs.service';
 import { ScraperService } from 'src/scraper/scraper.service';
 import { MappingService } from 'src/mapping/mapping.service';
 
+/**
+ * Service responsible for managing drug indications, including CRUD operations and automated generation
+ */
 @Injectable()
 export class IndicationsService {
   constructor(
@@ -29,6 +32,11 @@ export class IndicationsService {
     private mappingService: MappingService,
   ) {}
 
+  /**
+   * Creates a new indication
+   * @param dto - The indication data to create
+   * @returns Promise with the created indication document
+   */
   async create(dto: CreateIndicationDto): Promise<IndicationDocument> {
     return this.indicationModel.create({
       ...dto,
@@ -36,10 +44,19 @@ export class IndicationsService {
     });
   }
 
+  /**
+   * Retrieves all indications with populated drug references
+   * @returns Promise with array of all indication documents
+   */
   async findAll(): Promise<IndicationDocument[]> {
     return this.indicationModel.find().populate('drug').exec();
   }
 
+  /**
+   * Finds all indications for a specific drug
+   * @param drugId - The ID of the drug to find indications for
+   * @returns Promise with array of indication documents for the drug
+   */
   async findByDrug(drugId: string): Promise<IndicationDocument[]> {
     return this.indicationModel
       .find({ drug: new Types.ObjectId(drugId) })
@@ -47,6 +64,12 @@ export class IndicationsService {
       .exec();
   }
 
+  /**
+   * Finds a single indication by ID
+   * @param id - The ID of the indication to find
+   * @returns Promise with the found indication document
+   * @throws {NotFoundException} When indication is not found
+   */
   async findOne(id: string): Promise<IndicationDocument> {
     const indication = await this.indicationModel
       .findById(id)
@@ -56,6 +79,13 @@ export class IndicationsService {
     return indication;
   }
 
+  /**
+   * Updates an indication
+   * @param id - The ID of the indication to update
+   * @param dto - The data to update the indication with
+   * @returns Promise with the updated indication
+   * @throws {NotFoundException} When indication is not found
+   */
   async update(id: string, dto: UpdateIndicationDto): Promise<Indication> {
     const updated = await this.indicationModel
       .findByIdAndUpdate(id, dto, { new: true })
@@ -64,6 +94,11 @@ export class IndicationsService {
     return updated;
   }
 
+  /**
+   * Removes an indication
+   * @param id - The ID of the indication to remove
+   * @throws {NotFoundException} When indication is not found
+   */
   async remove(id: string): Promise<void> {
     const deleted = await this.indicationModel
       .findByIdAndDelete(new Types.ObjectId(id))
@@ -71,6 +106,12 @@ export class IndicationsService {
     if (!deleted) throw new NotFoundException('Indication not found');
   }
 
+  /**
+   * Generates indications for a drug by scraping information and mapping to ICD-10 codes
+   * @param drugId - The ID of the drug to generate indications for
+   * @returns Promise with the created indications and count
+   * @throws {NotFoundException} When drug is not found
+   */
   async generateFromScraper(drugId: string) {
     const drug = await this.drugsService.findOne(drugId);
     const phrases = await this.scraperService.extractIndications();

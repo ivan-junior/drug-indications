@@ -2,6 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 
+/**
+ * Service responsible for mapping medical conditions to ICD-10 codes using OpenAI's GPT
+ */
 @Injectable()
 export class MappingService {
   private readonly openai: OpenAI;
@@ -13,6 +16,12 @@ export class MappingService {
     });
   }
 
+  /**
+   * Maps a medical condition to its corresponding ICD-10 code using GPT
+   * @param condition - The medical condition to be mapped
+   * @returns Promise containing the ICD-10 code and its description
+   * @throws {Error} When GPT response cannot be parsed as valid JSON
+   */
   async mapToICD10(
     condition: string,
   ): Promise<{ code: string; description: string }> {

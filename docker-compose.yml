@@ -4,9 +4,8 @@ services:
     build: .
     ports:
       - '3000:3000'
-    environment:
-      - MONGO_URI=mongodb://root:2Gl4MFym8Q@mongo:27017/indicationsdb?authSource=admin
-      - JWT_SECRET=drug-indicator-secret
+    env_file:
+      - .env
     depends_on:
       - mongo
     volumes:

@@ -7,7 +7,26 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
+import { User, UserDocument, UserRole } from '../users/users.schema';
+import { Types } from 'mongoose';
 
+interface JwtPayload {
+  email: string;
+  sub: string;
+  role: UserRole;
+}
+
+interface AuthResponse {
+  access_token: string;
+}
+
+type UserWithId = Omit<UserDocument, 'password'> & {
+  _id: Types.ObjectId;
+};
+
+/**
+ * Service responsible for handling authentication and user validation
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,7 +36,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  /**
+   * Validates a user's credentials
+   * @param email - The user's email
+   * @param password - The user's password
+   * @returns Promise with the user object (without password)
+   * @throws {UnauthorizedException} When credentials are invalid
+   */
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<Omit<User, 'password'>> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user.toObject();
@@ -26,8 +55,17 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user._id, role: user.role };
+  /**
+   * Generates a JWT token for a validated user
+   * @param user - The user object to generate token for
+   * @returns Promise with the access token
+   */
+  async login(user: UserWithId): Promise<AuthResponse> {
+    const payload: JwtPayload = {
+      email: user.email,
+      sub: user._id.toString(),
+      role: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
