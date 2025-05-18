@@ -1,15 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateIndicationDto } from './dto/create-indication.dto';
 import { Indication, IndicationDocument } from './indications.schema';
 import { UpdateIndicationDto } from './dto/update-indication.dto';
+import { DrugsService } from 'src/drugs/drugs.service';
+import { ScraperService } from 'src/scraper/scraper.service';
+import { MappingService } from 'src/mapping/mapping.service';
 
 @Injectable()
 export class IndicationsService {
   constructor(
     @InjectModel(Indication.name)
     private indicationModel: Model<IndicationDocument>,
+
+    @Inject(forwardRef(() => DrugsService))
+    private drugsService: DrugsService,
+
+    @Inject(forwardRef(() => ScraperService))
+    private scraperService: ScraperService,
+
+    @Inject(forwardRef(() => MappingService))
+    private mappingService: MappingService,
   ) {}
 
   async create(dto: CreateIndicationDto): Promise<Indication> {
@@ -21,7 +38,10 @@ export class IndicationsService {
   }
 
   async findByDrug(drugId: string): Promise<Indication[]> {
-    return this.indicationModel.find({ drug: drugId }).populate('drug').exec();
+    return this.indicationModel
+      .find({ drug: new Types.ObjectId(drugId) })
+      .populate('drug')
+      .exec();
   }
 
   async findOne(id: string): Promise<Indication> {
@@ -44,5 +64,39 @@ export class IndicationsService {
   async remove(id: string): Promise<void> {
     const deleted = await this.indicationModel.findByIdAndDelete(id).exec();
     if (!deleted) throw new NotFoundException('Indication not found');
+  }
+
+  async generateFromScraper(drugId: string) {
+    const drug = await this.drugsService.findOne(drugId);
+    const phrases = await this.scraperService.extractIndications();
+
+    const created: Indication[] = [];
+
+    for (const condition of phrases) {
+      try {
+        const { code, description } =
+          await this.mappingService.mapToICD10(condition);
+        const indication = await this.indicationModel.create({
+          drug: drug._id,
+          condition,
+          icd10Code: code,
+          icd10Description: description,
+          unmapped: false,
+        });
+        created.push(indication);
+      } catch (err) {
+        const fallback = await this.indicationModel.create({
+          drug: drug._id,
+          condition,
+          unmapped: true,
+        });
+        created.push(fallback);
+      }
+    }
+
+    return {
+      createdCount: created.length,
+      indications: created,
+    };
   }
 }

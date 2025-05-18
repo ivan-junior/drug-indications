@@ -49,4 +49,9 @@ export class IndicationsController {
   remove(@Param('id') id: string) {
     return this.indicationsService.remove(id);
   }
+
+  @Post('generate-from-scraper/:drugId')
+  async generateFromScraper(@Param('drugId') drugId: string) {
+    return this.indicationsService.generateFromScraper(drugId);
+  }
 }

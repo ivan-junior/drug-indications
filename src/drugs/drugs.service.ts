@@ -18,10 +18,10 @@ export class DrugsService {
     return this.drugModel.find().exec();
   }
 
-  async findOne(id: string): Promise<Drug> {
+  async findOne(id: string): Promise<DrugDocument & { createdAt: Date }> {
     const drug = await this.drugModel.findById(id).exec();
     if (!drug) throw new NotFoundException('Drug not found');
-    return drug;
+    return drug as unknown as DrugDocument & { createdAt: Date };
   }
 
   async update(id: string, dto: UpdateDrugDto): Promise<Drug> {

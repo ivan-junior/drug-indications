@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { DrugsModule } from './drugs/drugs.module';
 import { IndicationsModule } from './indications/indications.module';
 import { ScraperModule } from './scraper/scraper.module';
+import { MappingModule } from './mapping/mapping.module';
+import { ProgramsModule } from './programs/programs.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ScraperModule } from './scraper/scraper.module';
     DrugsModule,
     IndicationsModule,
     ScraperModule,
+    MappingModule,
+    ProgramsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
