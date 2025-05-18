@@ -1,98 +1,126 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Drug Indications API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A modern API built with NestJS for managing drug indications and mapping them to ICD-10 codes using AI.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- 🔒 JWT Authentication
+- 🏥 Drug and Medical Indications Management
+- 🤖 AI-Powered ICD-10 Code Mapping
+- 🕷️ Web Scraping for Drug Information
+- 📚 Swagger API Documentation
+- 🗄️ MongoDB Database
+- ✨ TypeScript Support
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack
 
-## Project setup
+- **Framework:** [NestJS](https://nestjs.com/) v11
+- **Database:** [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/) v8
+- **Authentication:** [Passport](https://www.passportjs.org/) & [JWT](https://jwt.io/)
+- **AI Integration:** [OpenAI API](https://openai.com/blog/openai-api)
+- **Web Scraping:** [Cheerio](https://cheerio.js.org/) & [Axios](https://axios-http.com/)
+- **API Documentation:** [Swagger/OpenAPI](https://swagger.io/)
+- **Validation:** [class-validator](https://github.com/typestack/class-validator) & [Zod](https://zod.dev/)
+- **Testing:** [Jest](https://jestjs.io/) & [Supertest](https://github.com/ladjs/supertest)
 
-```bash
-$ npm install
+## Prerequisites
+
+- Node.js (v18 or higher)
+- MongoDB
+- OpenAI API Key
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# MongoDB
+MONGODB_URI=your_mongodb_connection_string
+
+# JWT
+JWT_SECRET=your_jwt_secret_key
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-## Compile and run the project
+## Installation
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Install dependencies
+npm install
 ```
 
-## Run tests
+## Running the Application
 
 ```bash
-# unit tests
-$ npm run test
+# Development mode
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Production mode
+npm run build
+npm run start:prod
 
-# test coverage
-$ npm run test:cov
+# Debug mode
+npm run start:debug
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Testing
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## API Documentation
 
-## Resources
+Once the application is running, you can access the Swagger documentation at:
 
-Check out a few resources that may come in handy when working with NestJS:
+```
+http://localhost:3000/docs
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Project Structure
 
-## Support
+```
+src/
+├── auth/           # Authentication module
+├── drugs/          # Drug management module
+├── indications/    # Medical indications module
+├── mapping/        # ICD-10 mapping module
+├── scraper/        # Web scraping module
+├── users/          # User management module
+└── app.module.ts   # Main application module
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Features in Detail
 
-## Stay in touch
+### Authentication
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- User registration and login
+- JWT-based authentication
+- Role-based access control (User/Admin)
 
-## License
+### Drug Management
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- CRUD operations for drugs
+- Drug information storage
+- Relationship with indications
+
+### Medical Indications
+
+- Automated indication extraction from drug information
+- ICD-10 code mapping
+- Indication management and tracking
+
+### AI Integration
+
+- OpenAI-powered medical condition mapping
+- Automatic ICD-10 code assignment
+- Intelligent text processing
