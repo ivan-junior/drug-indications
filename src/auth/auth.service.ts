@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { User, UserDocument, UserRole } from '../users/users.schema';
+import { User, UserRole } from '../users/users.schema';
 import { Types } from 'mongoose';
 
 interface JwtPayload {
@@ -16,11 +16,11 @@ interface JwtPayload {
   role: UserRole;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   access_token: string;
 }
 
-type UserWithId = Omit<UserDocument, 'password'> & {
+type UserWithId = Omit<User, 'password'> & {
   _id: Types.ObjectId;
 };
 
@@ -46,7 +46,7 @@ export class AuthService {
   async validateUser(
     email: string,
     password: string,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<User, 'password'> & { _id: Types.ObjectId }> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user.toObject();
