@@ -16,7 +16,7 @@ export class UsersService {
     private userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<{ success: true }> {
+  async create(createUserDto: CreateUserDto): Promise<{ email: string }> {
     const existing = await this.userModel.findOne({
       email: createUserDto.email,
     });
@@ -31,7 +31,7 @@ export class UsersService {
       role: UserRole.USER,
     });
 
-    return { success: true };
+    return { email: user.email };
   }
 
   async findByEmail(email: string): Promise<UserDocument | null> {

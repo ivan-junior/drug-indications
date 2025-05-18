@@ -29,22 +29,25 @@ export class IndicationsService {
     private mappingService: MappingService,
   ) {}
 
-  async create(dto: CreateIndicationDto): Promise<Indication> {
-    return this.indicationModel.create(dto);
+  async create(dto: CreateIndicationDto): Promise<IndicationDocument> {
+    return this.indicationModel.create({
+      ...dto,
+      drug: new Types.ObjectId(dto.drug),
+    });
   }
 
-  async findAll(): Promise<Indication[]> {
+  async findAll(): Promise<IndicationDocument[]> {
     return this.indicationModel.find().populate('drug').exec();
   }
 
-  async findByDrug(drugId: string): Promise<Indication[]> {
+  async findByDrug(drugId: string): Promise<IndicationDocument[]> {
     return this.indicationModel
       .find({ drug: new Types.ObjectId(drugId) })
       .populate('drug')
       .exec();
   }
 
-  async findOne(id: string): Promise<Indication> {
+  async findOne(id: string): Promise<IndicationDocument> {
     const indication = await this.indicationModel
       .findById(id)
       .populate('drug')
@@ -62,7 +65,9 @@ export class IndicationsService {
   }
 
   async remove(id: string): Promise<void> {
-    const deleted = await this.indicationModel.findByIdAndDelete(id).exec();
+    const deleted = await this.indicationModel
+      .findByIdAndDelete(new Types.ObjectId(id))
+      .exec();
     if (!deleted) throw new NotFoundException('Indication not found');
   }
 

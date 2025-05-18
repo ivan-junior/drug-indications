@@ -9,9 +9,8 @@ import { Drug, DrugDocument } from './drugs.schema';
 export class DrugsService {
   constructor(@InjectModel(Drug.name) private drugModel: Model<DrugDocument>) {}
 
-  async create(dto: CreateDrugDto): Promise<Drug> {
-    const drug = new this.drugModel(dto);
-    return drug.save();
+  async create(dto: CreateDrugDto): Promise<DrugDocument> {
+    return await this.drugModel.create(dto);
   }
 
   async findAll(): Promise<Drug[]> {

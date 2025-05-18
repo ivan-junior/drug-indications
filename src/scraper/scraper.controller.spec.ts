@@ -1,12 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ScraperController } from './scraper.controller';
+import { ScraperService } from './scraper.service';
 
 describe('ScraperController', () => {
   let controller: ScraperController;
 
+  const mockScraperService = {
+    extractIndications: jest
+      .fn()
+      .mockResolvedValue([
+        'asthma',
+        'chronic rhinosinusitis with nasal polyposis',
+      ]),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ScraperController],
+      providers: [
+        {
+          provide: ScraperService,
+          useValue: mockScraperService,
+        },
+      ],
     }).compile();
 
     controller = module.get<ScraperController>(ScraperController);
@@ -14,5 +30,12 @@ describe('ScraperController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should extract indications', async () => {
+    const result = await controller.getIndications();
+    expect(Array.isArray(result)).toBe(true);
+    expect(result).toContain('asthma');
+    expect(result).toContain('chronic rhinosinusitis with nasal polyposis');
   });
 });

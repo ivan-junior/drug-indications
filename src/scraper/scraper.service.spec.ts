@@ -15,4 +15,11 @@ describe('ScraperService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should return at least one condition', async () => {
+    const result = await service.extractIndications();
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+    expect(typeof result[0]).toBe('string');
+  }, 10000);
 });
