@@ -77,6 +77,11 @@ docker-compose up
 | POST   | `/indications/generate-from-scraper/:drugId` | Extract + map + save via GPT         |
 | GET    | `/programs/:program_id`                      | Return structured JSON for a program |
 
+### 🎥 Video Demonstration
+
+Watch a complete demonstration of how to use all API routes in this video tutorial:
+[API Routes Demo](https://youtu.be/Mx_iASNh_xo)
+
 ---
 
 ## 🧪 Testing
