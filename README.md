@@ -1,126 +1,150 @@
 # Drug Indications API
 
-A modern API built with NestJS for managing drug indications and mapping them to ICD-10 codes using AI.
+This project was developed as part of a technical test for a Node.js position. The application extracts drug indications from the Dupixent label (DailyMed), maps those indications to ICD-10 codes using the OpenAI API, and provides a RESTful API for querying and managing the data.
 
-## Features
+---
 
-- 🔒 JWT Authentication
-- 🏥 Drug and Medical Indications Management
-- 🤖 AI-Powered ICD-10 Code Mapping
-- 🕷️ Web Scraping for Drug Information
-- 📚 Swagger API Documentation
-- 🗄️ MongoDB Database
-- ✨ TypeScript Support
+## 🚀 Technologies Used
 
-## Tech Stack
+- **NestJS** (Node.js Framework)
+- **MongoDB** (NoSQL database)
+- **OpenAI GPT API** (ICD-10 mapping)
+- **Mongoose**
+- **JWT Authentication**
+- **Docker & docker-compose**
+- **Jest + mongodb-memory-server** (for testing)
 
-- **Framework:** [NestJS](https://nestjs.com/) v11
-- **Database:** [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/) v8
-- **Authentication:** [Passport](https://www.passportjs.org/) & [JWT](https://jwt.io/)
-- **AI Integration:** [OpenAI API](https://openai.com/blog/openai-api)
-- **Web Scraping:** [Cheerio](https://cheerio.js.org/) & [Axios](https://axios-http.com/)
-- **API Documentation:** [Swagger/OpenAPI](https://swagger.io/)
-- **Validation:** [class-validator](https://github.com/typestack/class-validator) & [Zod](https://zod.dev/)
-- **Testing:** [Jest](https://jestjs.io/) & [Supertest](https://github.com/ladjs/supertest)
+---
 
-## Prerequisites
+## 📆 How to Run the Project
 
-- Node.js (v18 or higher)
-- MongoDB
-- OpenAI API Key
+> Requirements: Docker and Docker Compose
 
-## Environment Variables
+1. Clone the repository:
 
-Create a `.env` file in the root directory with the following variables:
+```bash
+git clone https://github.com/your-user/drug-indications-api.git
+cd drug-indications-api
+```
+
+2. Set up the `.env` file:
 
 ```env
-# MongoDB
-MONGODB_URI=your_mongodb_connection_string
-
-# JWT
-JWT_SECRET=your_jwt_secret_key
-
-# OpenAI
-OPENAI_API_KEY=your_openai_api_key
+MONGO_URI=mongodb://root:<PASSWORD>@mongo:27017/indicationsdb?authSource=admin
+JWT_SECRET=your-secret
+OPENAI_API_KEY=sk-...
 ```
 
-## Installation
+3. Start with Docker:
 
 ```bash
-# Install dependencies
-npm install
+docker-compose up
 ```
 
-## Running the Application
+4. Access the application at:  
+   `http://localhost:3000`
+
+---
+
+## 📘 API Documentation
+
+> All routes require JWT Authentication (`Bearer <token>`)
+
+### 🔑 Auth
+
+| Method | Route            | Description         |
+| ------ | ---------------- | ------------------- |
+| POST   | `/auth/register` | Register a new user |
+| POST   | `/auth/login`    | Login and get token |
+
+### 💊 Drugs
+
+| Method | Route        | Description       |
+| ------ | ------------ | ----------------- |
+| GET    | `/drugs`     | List all drugs    |
+| POST   | `/drugs`     | Create a new drug |
+| GET    | `/drugs/:id` | Get drug details  |
+| PUT    | `/drugs/:id` | Update a drug     |
+| DELETE | `/drugs/:id` | Delete a drug     |
+
+### 🦠 Indications
+
+| Method | Route                                        | Description                          |
+| ------ | -------------------------------------------- | ------------------------------------ |
+| GET    | `/indications`                               | List all indications                 |
+| GET    | `/indications/drug/:drugId`                  | List indications by drug             |
+| POST   | `/indications`                               | Create a manual indication           |
+| POST   | `/indications/generate-from-scraper/:drugId` | Extract + map + save via GPT         |
+| GET    | `/programs/:program_id`                      | Return structured JSON for a program |
+
+---
+
+## 🧪 Testing
+
+Run unit tests with:
 
 ```bash
-# Development mode
-npm run start:dev
-
-# Production mode
-npm run build
-npm run start:prod
-
-# Debug mode
-npm run start:debug
-```
-
-## Testing
-
-```bash
-# Unit tests
 npm run test
-
-# E2E tests
-npm run test:e2e
-
-# Test coverage
-npm run test:cov
 ```
 
-## API Documentation
+- Uses Jest + MongoDB in memory
+- Tests services (scraper, mapping, drugs, auth, etc.)
+- Integration tests using supertest
 
-Once the application is running, you can access the Swagger documentation at:
+---
 
+## 🧠 Scalability Considerations
+
+- Decoupled database (MongoDB via Docker)
+- Modular scraper (per drug)
+- ICD-10 mapping via LLM with fallback (`unmapped`)
+- Easy to extend to multiple drugs
+- Optimization possible with caching, async jobs, and batch operations
+
+---
+
+## 🛠 Future Improvements
+
+- Admin panel to review unmapped indications
+- Integration with local ICD-10 code databases
+- Automated scheduled scraping (cron job)
+- Full RBAC implementation (admin vs user)
+- API pagination and filtering
+
+---
+
+## 💼 How I Would Lead the Team
+
+If I were leading the engineering team for this project, I would follow these principles:
+
+1. **Clean architecture from the start**, with clear separation between scraping, mapping, API, and data layers.
+2. **Incremental delivery planning**, using continuous deployment.
+3. **Minimum test coverage required for all new features** (mandatory before merge).
+4. **Active error monitoring**, especially around AI/GPT failures.
+5. **Accessible documentation and visual demos** (e.g., Swagger or Postman).
+6. **Internal consistency through standards** (DTOs, naming, error responses).
+
+Long-term maintenance would focus on extensibility: adding new drugs, fields, and sources. MongoDB allows flexibility without sacrificing structure, and the GPT-based logic is encapsulated and replaceable if needed.
+
+---
+
+## 📋 Example API Response
+
+```json
+{
+  "programId": "6829d95de79c986c568fb5ea",
+  "name": "Dupixent",
+  "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=595f437d-2729-40bb-9c62-c8ece1f82780&audience=consumer",
+  "indications": [
+    {
+      "condition": "DUPIXENT is used to reduce the number of flare-ups (the worsening of your COPD symptoms for several days) and can improve your breathing",
+      "icd10Code": "J44.9",
+      "icd10Description": "Chronic obstructive pulmonary disease, unspecified",
+      "unmapped": false
+    }
+  ],
+  "createdAt": "2025-05-18T12:58:05.455Z"
+}
 ```
-http://localhost:3000/docs
-```
 
-## Project Structure
-
-```
-src/
-├── auth/           # Authentication module
-├── drugs/          # Drug management module
-├── indications/    # Medical indications module
-├── mapping/        # ICD-10 mapping module
-├── scraper/        # Web scraping module
-├── users/          # User management module
-└── app.module.ts   # Main application module
-```
-
-## Features in Detail
-
-### Authentication
-
-- User registration and login
-- JWT-based authentication
-- Role-based access control (User/Admin)
-
-### Drug Management
-
-- CRUD operations for drugs
-- Drug information storage
-- Relationship with indications
-
-### Medical Indications
-
-- Automated indication extraction from drug information
-- ICD-10 code mapping
-- Indication management and tracking
-
-### AI Integration
-
-- OpenAI-powered medical condition mapping
-- Automatic ICD-10 code assignment
-- Intelligent text processing
+---

@@ -3,7 +3,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from '../users/dto/login.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -14,11 +14,19 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @ApiOperation({
+    description: 'Register a new user',
+    summary: 'Register a new user',
+  })
   async register(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Post('login')
+  @ApiOperation({
+    description: 'Login a user',
+    summary: 'Login a user',
+  })
   async login(@Body() loginDto: LoginDto) {
     const user = await this.authService.validateUser(
       loginDto.email,
